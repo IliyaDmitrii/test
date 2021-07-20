@@ -37,11 +37,23 @@ class PostController{
     // put(update)
     async edit(req,res){
         try{
+            const {id} = req.params
+            if(!id){
+                throw new Error('Post not found')
+            }
+            const updatePost =  await Post.findByIdAndUpdate(id,req.body,{new: true})
+            return res.json(updatePost);
+        }catch (e){
+            res.status(500).json(e);
+        }
+    }
+    async editPostsPatch(req,res){
+        try{
             const post = req.body
             if(!post._id){
                 throw new Error('Post not found')
             }
-            const updatePost =  await Post.findByIdAndUpdate(post._id,post,{new: true})
+            const updatePost =  await Post.findByIdAndUpdate(post._id,post,{new: true , useFindAndModify: false})
             return res.json(updatePost);
         }catch (e){
             res.status(500).json(e);
